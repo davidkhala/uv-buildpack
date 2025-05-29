@@ -1,0 +1,46 @@
+name: "davidkhala/uv-buildpack"
+description: A typical uv build steps. Assume you have checkout source already
+
+branding:
+  icon: 'package'
+  color: 'yellow'
+inputs:
+  tests:
+    description: 'Test Sources Root: working-directory of your tests'
+    required: false
+    default: tests
+  test-entry-point:
+    description: 'script of test command'
+    required: false
+  version:
+    description: 'python version'
+    required: false
+  working-directory:
+    description: 'poetry home path'
+    required: false
+    default: .
+  extras:
+    description: 'extras to be installed'
+    required: false
+runs:
+  using: "composite"
+  steps:
+  - if: ${{ inputs.version != '' }}
+    uses: actions/setup-python@main
+    with:
+      python-version: ${{ inputs.version == 'latest' && '3.x' || inputs.version }}
+  - uses: astral-sh/setup-uv@main
+    with:
+      version: "latest"
+  - if: ${{ inputs.extras != '' }}
+    run: uv sync --extra "${{inputs.extras}}"
+    working-directory: ${{inputs.working-directory}}
+    shell: bash
+  - if: ${{ inputs.extras == '' }}
+    run: uv sync --all-extras
+    working-directory: ${{inputs.working-directory}}
+    shell: bash
+  - if: ${{ inputs.test-entry-point != '' }}
+    run: uv run ${{ inputs.test-entry-point }}
+    working-directory: ${{ inputs.tests }}
+    shell: bash
