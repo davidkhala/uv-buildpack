@@ -13,7 +13,3 @@ steps:
     version: 3.12 # python version. Default to runner's python version. Support 'latest' as value
     extras: extra1 extra2 # extras to be installed. It should be subset of extras defined in Default to install all extras
 ```
-
-## Design
-
-`shell: bash` is a alignment to `snok/install-poetry`
