@@ -36,7 +36,8 @@ runs:
     with:
       version: "latest"
 
-  - shell: bash
+  - name: Install dependencies
+    shell: bash
     working-directory: ${{inputs.working-directory}}
     run: |
       EXTRA_ARGS=""

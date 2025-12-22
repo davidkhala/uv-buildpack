@@ -36,4 +36,4 @@ jobs:
             working-directory: .github/with-test
             test-entry-point: ${{matrix.test-command}}
             tests: .github/with-test/tests
-            groups: dev duckdb
+            groups: duckdb pandas

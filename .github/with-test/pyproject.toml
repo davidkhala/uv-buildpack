@@ -7,7 +7,7 @@ dependencies = ["davidkhala-utils"]
 [dependency-groups]
 dev = ["pytest"]
 duckdb = ["duckdb"]
-
+pandas = ["pandas"]
 [tool.uv]
 package = false
 
