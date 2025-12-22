@@ -22,6 +22,9 @@ inputs:
   extras:
     description: 'extras to be installed'
     required: false
+  groups:
+    description: 'dependency groups to be installed'
+    required: false
 runs:
   using: "composite"
   steps:
@@ -33,19 +36,29 @@ runs:
     with:
       version: "latest"
 
-  - name: Sync dependencies
-    shell: bash
+  - shell: bash
     working-directory: ${{inputs.working-directory}}
     run: |
       EXTRA_ARGS=""
-      for extra in ${{ inputs.extras }}; do
-        EXTRA_ARGS="$EXTRA_ARGS --extra $extra"
-      done
       if [ -z "${{ inputs.extras }}" ]; then
-        uv sync --all-extras
+        EXTRA_ARGS="--all-extras"
       else
-        uv sync $EXTRA_ARGS
+        for extra in ${{ inputs.extras }}; do
+          EXTRA_ARGS="$EXTRA_ARGS --extra $extra"
+        done
       fi  
+      
+      GROUP_ARGS=""
+      if [ -z "${{ inputs.groups }}" ]; then
+        GROUP_ARGS="--all-groups"
+      else
+        for group in ${{ inputs.groups }}; do
+          GROUP_ARGS="$GROUP_ARGS --group $group"
+        done
+      fi
+
+      uv sync $EXTRA_ARGS $GROUP_ARGS
+      
 
   - if: ${{ inputs.test-entry-point != '' }}
     run: uv run ${{ inputs.test-entry-point }}

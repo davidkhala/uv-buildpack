@@ -6,6 +6,7 @@ dependencies = ["davidkhala-utils"]
 
 [dependency-groups]
 dev = ["pytest"]
+duckdb = ["duckdb"]
 
 [tool.uv]
 package = false
