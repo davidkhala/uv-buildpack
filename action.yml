@@ -5,13 +5,6 @@ branding:
   icon: 'package'
   color: 'yellow'
 inputs:
-  tests:
-    description: 'Test Sources Root: working-directory of your tests'
-    required: false
-    default: tests
-  test-entry-point:
-    description: 'script of test command'
-    required: false
   version:
     description: 'python version'
     required: false
@@ -24,6 +17,16 @@ inputs:
     required: false
   groups:
     description: 'dependency groups to be installed'
+    required: false
+  post-install:
+    description: 'script to run with uv after dependency installation'
+    required: false
+  tests:
+    description: 'Test Sources Root: working-directory of your tests'
+    required: false
+    default: tests
+  test-entry-point:
+    description: 'script of test command'
     required: false
 runs:
   using: "composite"
@@ -59,7 +62,12 @@ runs:
       fi
 
       uv sync $EXTRA_ARGS $GROUP_ARGS
-      
+
+  - if: ${{ inputs.post-install != '' }}
+    name: Run post install script
+    shell: bash
+    working-directory: ${{ inputs.working-directory }}
+    run: uv run ${{ inputs.post-install }}
 
   - if: ${{ inputs.test-entry-point != '' }}
     run: uv run ${{ inputs.test-entry-point }}
